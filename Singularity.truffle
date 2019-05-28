@@ -1,0 +1,58 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+	Singularity recipe to build ubuntu+ethereum truffle framework
+	containing a working test ethereum node.
+
+%environment
+	BASE_DIR="$PWD"
+	CONTRACTS_DIR="$BASE_DIR/contracts-experiment"
+	export CONTRACTS_DIR
+	
+	# ethereum variables
+	ETH_CONTRACT_DIR="$CONTRACTS_DIR/ethereum-contract"
+	GANACHE_LOG_FILE="ganache.output"
+	MIGRATE_LOG_FILE="migrate.output"
+	export ETH_CONTRACT_DIR GANACHE_LOG_FILE MIGRATE_LOG_FILE
+
+%post
+
+	########
+	# Install basic utilities
+	########
+	apt-get update
+	apt-get install -y build-essential git gcc g++ npm 
+	
+	########
+	# Install truffle framework
+	########
+	echo "[Start] Installing ethereum truffle framework..."
+	npm install -g truffle
+	npm install -g ganache-cli
+	echo "[End] Truffle framework installed."
+
+%runscript
+	echo "Launching Ethereum environment (TestNet+contract deployment)!"
+	# if the repository with the contracts doesn't exist, clone it
+	if [ ! -d "$CONTRACTS_DIR" ]; then
+	   echo "[Info] Contracts dir not found, installing it."
+	   git clone https://gitlab.com/clementcs/contracts-experiment
+	fi
+
+	echo "[Info] Going in ${ETH_CONTRACT_DIR}"
+	cd "$ETH_CONTRACT_DIR"
+
+	echo "[Info] Launching TestNet, logs in $GANACHE_LOG_FILE"
+	ganache-cli --port 8545 > ${GANACHE_LOG_FILE} 2>&1 &
+
+	echo "[Info] $PWD Deploying contracts, logs in $MIGRATE_LOG_FILE"
+	truffle migrate --network test > ${MIGRATE_LOG_FILE} 2>&1
+	echo `ls`
+
+	echo "Done!"
+	
+%files
+
+%labels
+	AUTHOR klement
