@@ -1,0 +1,57 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+	Singularity recipe to build ubuntu+ethereum truffle framework
+	containing a working test ethereum node.
+
+%environment
+	BASE_DIR="$PWD"
+	CONTRACTS_DIR="$BASE_DIR/contracts-experiment"
+	export CONTRACTS_DIR
+	
+	# ethereum variables
+	ETH_CONTRACT_DIR="$CONTRACTS_DIR/ethereum-contract"
+	GANACHE_LOG_FILE="ganache.output"
+	MIGRATE_LOG_FILE="migrate.output"
+	export ETH_CONTRACT_DIR GANACHE_LOG_FILE MIGRATE_LOG_FILE
+
+	# node path (I shouldn't install globally, but I do it for now)
+	NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+	export NODE_PATH
+
+	# GO PATH (change it later)
+	GOPATH="$BASEDIR/go/"
+	export GOPATH
+
+	PATH=$PATH:$GOPATH/bin
+	export PATH
+%post
+
+	########
+	# Install basic utilities
+	########
+	apt-get update
+	apt-get install -y build-essential curl git gcc golang g++ npm 
+	
+	########
+	# Install tendermint abci-cli
+	########
+	export GOPATH="$BASEDIR/go/"
+	export PATH=$PATH:$GOPATH/bin
+	mkdir -p $GOPATH/src/github.com/tendermint
+      	cd $GOPATH/src/github.com/tendermint
+   	git clone https://github.com/tendermint/tendermint.git
+	pwd
+    	cd tendermint
+   	make get_tools
+   	make get_vendor_deps
+     	make install_abci
+	make install
+
+%runscript
+	
+%files
+
+%labels
+	AUTHOR klement

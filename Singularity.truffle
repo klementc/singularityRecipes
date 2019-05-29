@@ -16,6 +16,9 @@ From: ubuntu:18.04
 	MIGRATE_LOG_FILE="migrate.output"
 	export ETH_CONTRACT_DIR GANACHE_LOG_FILE MIGRATE_LOG_FILE
 
+	# node path (I shouldn't install globally, but I do it for now)
+	NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+	export NODE_PATH
 %post
 
 	########
@@ -30,6 +33,8 @@ From: ubuntu:18.04
 	echo "[Start] Installing ethereum truffle framework..."
 	npm install -g truffle
 	npm install -g ganache-cli
+	npm install -g solc
+	npm install -g web3
 	echo "[End] Truffle framework installed."
 
 %runscript
@@ -45,12 +50,16 @@ From: ubuntu:18.04
 
 	echo "[Info] Launching TestNet, logs in $GANACHE_LOG_FILE"
 	ganache-cli --port 8545 > ${GANACHE_LOG_FILE} 2>&1 &
+	GANACHE_PID=$!
+	echo "[Info] ganache pid: $GANACHE_PID"
 
 	echo "[Info] $PWD Deploying contracts, logs in $MIGRATE_LOG_FILE"
 	truffle migrate --network test > ${MIGRATE_LOG_FILE} 2>&1
 	echo `ls`
 
-	echo "Done!"
+	echo "[Info] Done!"
+	echo "[Info] Killing ganache."
+	kill -9 $GANACHE_PID
 	
 %files
 
