@@ -1,0 +1,31 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+	Singularity recipe to build ubuntu+ethereum truffle framework
+	containing a working test ethereum node.
+
+%environment
+	export GOPATH=$PWD/go
+	export PATH=$PATH:/usr/local/go/bin
+%post
+	echo $HOME
+	########
+	# Install basic utilities
+	########
+	apt-get update
+	apt-get install -y build-essential curl git gcc g++ npm  wget
+
+	wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
+	tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
+	export PATH=$PATH:/usr/local/go/bin
+
+
+
+%runscript
+
+	bash /cosmos_start.sh
+%files
+	./cosmos_start.sh
+%labels
+	AUTHOR klement
