@@ -1,0 +1,41 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+	Singularity recipe to build ubuntu+ethereum truffle framework
+	containing a working test ethereum node.
+
+%environment
+	BASE_DIR="$PWD"
+	CONTRACTS_DIR="$BASE_DIR/contracts-experiment"
+	export CONTRACTS_DIR
+	
+	# node path (I shouldn't install globally, but I do it for now)
+	NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+	export NODE_PATH
+
+	# GO PATH (change it later)
+	GOPATH="$BASEDIR/go/"
+	export GOPATH
+
+	PATH=$PATH:$GOPATH/bin
+	export PATH
+%post
+	########
+	# Install basic utilities
+	########
+	apt-get update
+	apt-get install -y build-essential curl git gcc golang g++ npm ssh sshpass software-properties-common
+
+	#######
+	# Install java
+	#######
+	apt-get install -y openjdk-8-jdk openjdk-8-jre
+
+%runscript
+	bash /corda_start.sh
+	pkill -9 java
+%files
+	./corda_start.sh
+%labels
+	AUTHOR klement
