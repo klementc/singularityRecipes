@@ -33,7 +33,7 @@ From: ubuntu:18.04
 	apt-get install -y openjdk-8-jdk openjdk-8-jre
 
 %runscript
-	bash /corda_start.sh
+	bash /corda_start.sh clone && bash /corda_start.sh deploy && bash /corda_start.sh start && sleep 40 && bash /corda_start.sh test
 	pkill -9 java
 %files
 	./corda_start.sh
