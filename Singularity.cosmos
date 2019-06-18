@@ -22,7 +22,7 @@ From: ubuntu:18.04
 	rm go1.12.5.linux-amd64.tar.gz
 
 %runscript
-	bash /cosmos_start.sh clone && bash /cosmos_start.sh init && bash /cosmos_start.sh test && bash /cosmos_start.sh  kill
+	bash /cosmos_start.sh clone && bash /cosmos_start.sh init && bash /cosmos_start.sh test && sleep 30 && bash /cosmos_start.sh  kill
 %files
 	./cosmos_start.sh
 %labels

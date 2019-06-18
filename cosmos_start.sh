@@ -89,22 +89,22 @@ function gentransact() {
     set -x
     nscli query account $(nscli keys show jack -a --home $NSCLIPATH) --home $NSCLIPATH
     nscli query account $(nscli keys show alice -a --home $NSCLIPATH) --home $NSCLIPATH
-    # Buy your first name using your coins from the genesis file
-    nscli tx nameservice buy-name jack.id 5nametoken --from jack --home $NSCLIPATH 
 
-    # Set the value for the name you just bought
-    nscli tx nameservice set-name jack.id 8.8.8.8 --from jack --home $NSCLIPATH 
-
-    # Try out a resolve query against the name you registered
-    nscli query nameservice resolve jack.id --home $NSCLIPATH
-    # > 8.8.8.8
-
-    # Try out a whois query against the name you just registered
-    nscli query nameservice whois jack.id --home $NSCLIPATH
-    # > {"value":"8.8.8.8","owner":"cosmos1l7k5tdt2qam0zecxrx78yuw447ga54dsmtpk2s","price":[{"denom":"nametoken","amount":"5"}]}
-
-    # Alice buys name from jack
-    nscli tx nameservice buy-name jack.id 10nametoken --from alice --home $NSCLIPATH
+    echo "SENDING 20 tokens in 20 times from jack to alice"
+    counter=1
+    while [ $counter -le 20 ]
+    do
+	((counter++))	
+	nscli tx bank send $(nscli keys show jack -a --home $NSCLIPATH) $(nscli keys show alice -a --home $NSCLIPATH) ${counter}nametoken --home $NSCLIPATH <<EOF
+Y
+$PASS
+EOF
+	sleep 5
+    done
+    
+    nscli query account $(nscli keys show jack -a --home $NSCLIPATH) --home $NSCLIPATH
+    nscli query account $(nscli keys show alice -a --home $NSCLIPATH) --home $NSCLIPATH
+    echo "DONE"
 }
 
 MODE=$1
