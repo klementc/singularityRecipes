@@ -7,24 +7,22 @@ From: ubuntu:18.04
 
 %environment
 	export GOPATH=$PWD/go
-	export PATH=$PATH:/usr/local/go/bin
+	export GOBIN=$GOPATH/bin
+	export PATH=$GOBIN:/usr/local/go/bin:$PATH
 %post
 	echo $HOME
 	########
 	# Install basic utilities
 	########
 	apt-get update
-	apt-get install -y build-essential curl git gcc g++ npm  wget
+	apt-get install -y build-essential git wget
 
 	wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
 	tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
-	export PATH=$PATH:/usr/local/go/bin
-
-
+	rm go1.12.5.linux-amd64.tar.gz
 
 %runscript
-
-	bash /cosmos_start.sh
+	bash /cosmos_start.sh clone && bash /cosmos_start.sh init && bash /cosmos_start.sh test && bash /cosmos_start.sh  kill
 %files
 	./cosmos_start.sh
 %labels
