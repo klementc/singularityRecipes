@@ -1,0 +1,27 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+
+%environment
+
+%post
+	########
+	# Install basic utilities
+	########
+	apt-get update
+	apt-get install -y build-essential curl git  npm wget
+
+	#######
+	# Install java
+	#######
+	apt-get install -y openjdk-11-jdk openjdk-11-jre maven
+
+	# IOTA wallet cli
+	npm install -g iota-cli-app
+%runscript
+
+%files
+	./iota_start.sh
+%labels
+	AUTHOR klement
