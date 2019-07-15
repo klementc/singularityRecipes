@@ -7,7 +7,7 @@ module.exports = {
     // do so because it has to do the Proof of Work (PoW) for you, which puts a very high load
     // on the server.
 
-    'provider': 'http://localhost:14700',
+    'provider': 'http://localhost:14265',
 
     // This is the difficulty of the Proof of Work, dont change this unless adviced.
     // If set too low it will produce an Invalid transaction hash error.
@@ -27,7 +27,7 @@ module.exports = {
 
     // Section name, this config section is used when you use my-wallet.js as the name of your wallet programm
     "my-wallet": {
-                seed: "NVBCRLWVPJNFADMTSJEIAOYW9GOZYGTHYQZFDOEQTVAKGSJXC9NAJHJLZCYZESTTUSPQ9LWPLKDDBAHWN",
+                seed: "MY9SEED9HERE",
 
                 // This database file contains information copied from the tangle
                 // in case of malfunction it can be deleted and rebuild by the SyncAll command
@@ -69,7 +69,7 @@ module.exports = {
 
     // Section name, this config section is used when you use alices-wallet.js as the name of your wallet programm
     "alices-wallet": {
-                seed: "BTCPYVB9QLVIBYNKUNOQPZYFIKDQAFXYNPDIRLFVAFYQYZDFLXOYOWJOATBQIMTYBPPIMZHPBQSIJINPH",
+                seed: "NVBCRLWVPJNFADMTSJEIAOYW9GOZYGTHYQZFDOEQTVAKGSJXC9NAJHJLZCYZESTTUSPQ9LWPLKDDBAHWN",
                 databaseFile: "database-alices-wallet.db",
 
                 // This databse file contains some maintenance information
@@ -142,6 +142,5 @@ module.exports = {
                 addressSecurityLevel: 2,
                 debugLevel: 3 // Values 0 to 9 0=silent 9=super verbose
             }
-
 };
 

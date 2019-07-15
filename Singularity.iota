@@ -18,9 +18,9 @@ From: ubuntu:18.04
 	apt-get install -y openjdk-11-jdk openjdk-11-jre maven
 
 	# IOTA wallet cli
-	npm install -g iota-cli-app path crypto
-	npm install -g iota.lib.js
-	npm -g install nedb
+	npm install -u iota-cli-app path crypto
+	npm install -u iota.lib.js
+	npm -u install nedb
 %runscript
 
 %files
@@ -29,5 +29,6 @@ From: ubuntu:18.04
 	./files/Snapshot.log /dataxp/Snapshot.log
 	./files/alices-wallet.js /dataxp/alices-wallet.js
 	./files/bobs-wallet.js /dataxp/bobs-wallet.js
+	./files/iota-wallet-config.js /dataxp/iota-wallet-config.js
 %labels
 	AUTHOR klement

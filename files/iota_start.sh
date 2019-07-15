@@ -4,7 +4,7 @@ function printHelp() {
     echo "--------------------------------------------"
     echo "Usage:"
     echo "iota.sh <mode>"
-    echo "<mode> install startIri checkInfo makeSnapshot milestone"
+    echo "<mode> install startIri checkInfo makeSnapshot milestone iota-cli"
     echo "--------------------------------------------"
 }
 
@@ -31,21 +31,28 @@ function install() {
     fi
     cd private-iota-testnet/
     mvn package
-    
+
+    cd ..
+    git clone https://github.com/MichaelSchwab/iota-commandline-wallet.git
+
+    cp /dataxp/Snapshot.{log,txt} ./node/
+    cp /dataxp/alices-wallet.js ./iota-commandline-wallet/
+    cp /dataxp/bobs-wallet.js ./iota-commandline-wallet/
+    cp /dataxp/iota-wallet-config.js ./iota-commandline-wallet/
 }
 
 function startIri() {
     cd node
     echo "[Info] Starting IRI"
     set -x
-    java -jar iri-1.5.4.jar --testnet --testnet-no-coo-validation --snapshot=Snapshot.txt -p 14700
+    java -jar iri-1.5.4.jar --testnet --testnet-no-coo-validation --snapshot=Snapshot.txt -p 14265
     set +x
     cd ..
 }
 
 function checkInfo() {
     set -x
-    curl -H "X-IOTA-API-Version: 1.5.4" -X POST -d '{"command":"getNodeInfo"}' http://localhost:14700
+    curl -H "X-IOTA-API-Version: 1.5.4" -X POST -d '{"command":"getNodeInfo"}' http://localhost:14265
     set +x
 }
 
@@ -69,7 +76,7 @@ function buildMilestone() {
 	exit 1
     fi
     set -x
-    java -jar private-iota-testnet/target/iota-testnet-tools-0.1-SNAPSHOT-jar-with-dependencies.jar Coordinator localhost 14700
+    java -jar private-iota-testnet/target/iota-testnet-tools-0.1-SNAPSHOT-jar-with-dependencies.jar Coordinator localhost 14265
     set +x
 }
 
@@ -81,11 +88,17 @@ function iota() {
     echo "${a[@]}"
     echo "[Info] end of seeds"
     echo "${a[1]}"
-    echo "[Info] Connecting to first seed and sending 1 iota to the second one"
-    str=$"node localhost:14700\nseed ${a[2]}\nbalance\nseed ${a[1]}\nbalance\transfer ${a[2]} 1\nnexit\n"
-    echo "$str" > tmp
-    iota-cli < tmp
-    #IFS=$OLDIFS
+
+    cd iota-commandline-wallet
+
+    echo "[Info] Sync wallets:"
+    node alices-wallet.js SyncAll
+    node bobs-wallet.js SyncAll
+
+    echo "[Info] Alice's balance:"
+    node alices-wallet.js ShowBalance
+    echo "[Info] Bob's balance:"
+    node bobs-wallet.js ShowBalance
 
 }
 
