@@ -10,7 +10,7 @@ From: ubuntu:18.04
 	# Install basic utilities
 	########
 	apt-get update
-	apt-get install -y build-essential curl git  npm wget
+	apt-get install -y build-essential curl git  npm wget nodejs
 
 	#######
 	# Install java
@@ -18,10 +18,16 @@ From: ubuntu:18.04
 	apt-get install -y openjdk-11-jdk openjdk-11-jre maven
 
 	# IOTA wallet cli
-	npm install -g iota-cli-app
+	npm install -g iota-cli-app path crypto
+	npm install -g iota.lib.js
+	npm -g install nedb
 %runscript
 
 %files
-	./iota_start.sh
+	./files/iota_start.sh /iota_start.sh
+	./files/Snapshot.txt /dataxp/Snapshot.txt
+	./files/Snapshot.log /dataxp/Snapshot.log
+	./files/alices-wallet.js /dataxp/alices-wallet.js
+	./files/bobs-wallet.js /dataxp/bobs-wallet.js
 %labels
 	AUTHOR klement

@@ -98,8 +98,6 @@ elif [ "$MODE" == "startIri" ]; then
     startIri
 elif [ "$MODE" == "checkInfo" ]; then
     checkInfo
-elif [ "$MODE" == "test" ]; then
-    testNodesCall
 elif [ "$MODE" == "makeSnapshot" ]; then
     makeSnapshot
 elif [ "$MODE" == "milestone" ]; then

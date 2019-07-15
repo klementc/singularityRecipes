@@ -36,6 +36,6 @@ From: ubuntu:18.04
 	bash /corda_start.sh clone && bash /corda_start.sh deploy && bash /corda_start.sh start && sleep 40 && bash /corda_start.sh test
 	pkill -9 java
 %files
-	./corda_start.sh
+	./files/corda_start.sh /corda_start.sh
 %labels
 	AUTHOR klement
