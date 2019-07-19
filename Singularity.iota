@@ -15,7 +15,7 @@ From: ubuntu:18.04
 	#######
 	# Install java
 	#######
-	apt-get install -y openjdk-11-jdk openjdk-11-jre maven
+	apt-get install -y openjdk-11-jdk openjdk-11-jre maven jq
 
 	# IOTA wallet cli
 	npm install -u iota-cli-app path crypto

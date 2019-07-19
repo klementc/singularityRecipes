@@ -35,6 +35,7 @@ From: ubuntu:18.04
 	npm install -g ganache-cli
 	npm install -g solc
 	npm install -g web3
+	npm install -g  truffle-contract
 	echo "[End] Truffle framework installed."
 
 %runscript
@@ -57,11 +58,13 @@ From: ubuntu:18.04
 	truffle migrate --network test > ${MIGRATE_LOG_FILE} 2>&1
 	echo `ls`
 
+	truffle exec test.js --network test
+
 	echo "[Info] Done!"
 	echo "[Info] Killing ganache."
 	kill -9 $GANACHE_PID
 	
 %files
-
+	
 %labels
 	AUTHOR klement

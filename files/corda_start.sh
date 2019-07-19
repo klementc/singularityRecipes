@@ -75,7 +75,11 @@ function startAllNodes() {
 	if [ -d ${entity} ]; then
 #	    set -x
 	    cd $entity
-	    java -jar corda.jar --no-local-shell &
+	    if [ ${entity} == "PartyC" ]; then
+	       java -jar corda.jar --no-local-shell
+	    else
+		java -jar corda.jar --no-local-shell &
+	    fi
 	    cd ..
 #	    set +x
 	else
@@ -105,10 +109,10 @@ function testNodesCall() {
 
     echo "Accounts funded, trading tokens now"
     counter=1
-    while [ $counter -le 20 ]
+    while [ $counter -le 100 ]
     do
 	((counter++))	
-	sshpass -p "test" ssh  -p 2222 -o StrictHostKeyChecking=no user1@localhost "start com.template.TransferTokenFlow receiver: 'O=PartyC,L=Paris,C=FR', amountToTransfer: 3.141592653589"
+	sshpass -p "test" ssh  -p 2222 -o StrictHostKeyChecking=no user1@localhost "start com.template.TransferTokenFlow receiver: 'O=PartyC,L=Paris,C=FR', amountToTransfer: 1" 
     done
 #    set +x
     echo "done"

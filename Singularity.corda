@@ -25,16 +25,22 @@ From: ubuntu:18.04
 	# Install basic utilities
 	########
 	apt-get update
-	apt-get install -y build-essential curl git ssh sshpass software-properties-common
+	apt-get install -y time build-essential curl git ssh sshpass software-properties-common
 
 	#######
 	# Install java
 	#######
 	apt-get install -y openjdk-8-jdk openjdk-8-jre
 
+	chmod 777 /corda_start.sh
+
 %runscript
-	bash /corda_start.sh clone && bash /corda_start.sh deploy && bash /corda_start.sh start && sleep 40 && bash /corda_start.sh test
-	pkill -9 java
+	time /corda_start.sh clone
+	time /corda_start.sh deploy
+	time /corda_start.sh start
+	sleep 40
+	time /corda_start.sh test
+
 %files
 	./files/corda_start.sh /corda_start.sh
 %labels

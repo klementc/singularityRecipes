@@ -95,7 +95,7 @@ function gentransact() {
     while [ $counter -le 20 ]
     do
 	((counter++))	
-	nscli tx bank send $(nscli keys show jack -a --home $NSCLIPATH) $(nscli keys show alice -a --home $NSCLIPATH) ${counter}nametoken --home $NSCLIPATH <<EOF
+	nscli tx --trace bank send $(nscli keys show jack -a --home $NSCLIPATH) $(nscli keys show alice -a --home $NSCLIPATH) ${counter}nametoken --home $NSCLIPATH <<EOF
 Y
 $PASS
 EOF

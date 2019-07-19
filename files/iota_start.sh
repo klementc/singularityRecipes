@@ -100,6 +100,19 @@ function iota() {
     echo "[Info] Bob's balance:"
     node bobs-wallet.js ShowBalance
 
+    for i in {1..5}
+    do
+	echo "Sending $i iotas from bob->alice"
+	echo "Alice new addres:"
+	addr=$(node alices-wallet.js GetNewAddress | jq -r ".address")
+	echo $addr
+	node bobs-wallet.js Transfer $addr $i
+	node my-wallet.js Replay $addr
+	echo $addr
+    done
+    cd ..
+    buildMilestone
+
 }
 
 
