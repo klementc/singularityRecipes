@@ -37,10 +37,10 @@ From: ubuntu:18.04
 %runscript
 	time /corda_start.sh clone
 	time /corda_start.sh deploy
-	time /corda_start.sh start
-	sleep 40
+	/corda_start.sh start
+	sleep 50
 	time /corda_start.sh test
-
+	killall java
 %files
 	./files/corda_start.sh /corda_start.sh
 %labels

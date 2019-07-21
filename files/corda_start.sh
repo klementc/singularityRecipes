@@ -75,18 +75,13 @@ function startAllNodes() {
 	if [ -d ${entity} ]; then
 #	    set -x
 	    cd $entity
-	    if [ ${entity} == "PartyC" ]; then
-	       java -jar corda.jar --no-local-shell
-	    else
-		java -jar corda.jar --no-local-shell &
-	    fi
+	    java -jar corda.jar --no-local-shell &
 	    cd ..
-#	    set +x
+	    #set +x
 	else
 	    echo "[ERROR] NODES NEED TO BE DEPLOYED BEFORE STARTED. If already done, verify you launched the script from the root of the project."
 	    exit 1
 	fi
-	
     done
 }
 
@@ -99,20 +94,26 @@ function testNodesCall() {
                         |___|"
     cd  contracts-experiment/corda-dapp/cordapp-token-ownable/
     #set -x
-    echo "Adding money to accounts:"
-    echo "- PartyA: 1337 tokens"
-    sshpass -p "test" ssh  -p 2222 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 1337
-    echo "- PartyB: 420 tokens"
-    sshpass -p "test" ssh  -p 2223 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 420
-    echo "- PartyB: 2019 tokens"
-    sshpass -p "test" ssh  -p 2224 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 2019
+    echo "Funding accounts with 100 tokens:"
+    echo "- PartyA: 100 tokens"
+    sshpass -p "test" ssh  -p 2222 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 100
+    echo "- PartyB: 100 tokens"
+    sshpass -p "test" ssh  -p 2223 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 100
+    echo "- PartyB: 100 tokens"
+    sshpass -p "test" ssh  -p 2224 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 100
 
     echo "Accounts funded, trading tokens now"
+    nbIter=100
     counter=1
-    while [ $counter -le 100 ]
+    while [ $counter -le $nbIter ]
     do
-	((counter++))	
-	sshpass -p "test" ssh  -p 2222 -o StrictHostKeyChecking=no user1@localhost "start com.template.TransferTokenFlow receiver: 'O=PartyC,L=Paris,C=FR', amountToTransfer: 1" 
+	((counter++))
+	# PartyA -> PartyB
+	sshpass -p "test" ssh  -p 2222 -o StrictHostKeyChecking=no user1@localhost "start com.template.TransferTokenFlow receiver: 'O=PartyB,L=New York,C=US', amountToTransfer: 1" 
+	# PartyB -> PartyC
+	sshpass -p "test" ssh  -p 2223 -o StrictHostKeyChecking=no user1@localhost "start com.template.TransferTokenFlow receiver: 'O=PartyC,L=Paris,C=FR', amountToTransfer: 1" 
+	# PartyC -> PartyA
+	sshpass -p "test" ssh  -p 2224 -o StrictHostKeyChecking=no user1@localhost "start com.template.TransferTokenFlow receiver: 'O=PartyA,L=London,C=GB', amountToTransfer: 1"
     done
 #    set +x
     echo "done"
