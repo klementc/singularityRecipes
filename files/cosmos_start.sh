@@ -2,13 +2,13 @@
 
 
 BASE_DIR=$PWD
-#export GOPATH="/tmp/go"
-#export GOBIN=$GOPATH/bin
-#export PATH=$PATH:$GOBIN
+
 echo "gopath: $GOPATH"
 echo "gobin: $GOBIN"
 export NSDPATH=$PWD/.nsd
 export NSCLIPATH=$PWD/.nscli
+
+# password for accounts
 PASS="aaaaaaaa"
 
 function clone() {
@@ -43,22 +43,25 @@ function init() {
     
     # Initialize configuration files and genesis file
     # moniker is the name of your node
-    nsd init coucou --chain-id namechain --home $NSDPATH
+    nsd init mon --chain-id namechain --home $NSDPATH
 
 
-    # Copy the `Address` output here and save it for later use
-    # [optional] add "--ledger" at the end to use a Ledger Nano S
-    nscli keys add jack --home $NSCLIPATH <<EOF
-$PASS
-EOF
-    # Copy the `Address` output here and save it for later use
+    # Create accounts
+    # One account for Alice, one for Bob, one for Charlie
     nscli keys add alice --home $NSCLIPATH <<EOF
 $PASS
 EOF
+    nscli keys add bob --home $NSCLIPATH <<EOF
+$PASS
+EOF
+    nscli keys add charlie --home $NSCLIPATH <<EOF
+$PASS
+EOF
 
-    # Add both accounts, with coins to the genesis file
-    nsd add-genesis-account $(nscli keys show jack -a --home $NSCLIPATH) 1000nametoken,100000000stake --home $NSDPATH  --home-client $NSCLIPATH
-    nsd add-genesis-account $(nscli keys show alice -a --home $NSCLIPATH) 1000nametoken,100000000stake --home $NSDPATH  --home-client $NSCLIPATH
+    # Add the 3 accounts, with coins to the genesis file
+    nsd add-genesis-account $(nscli keys show alice -a --home $NSCLIPATH) 100token,100000000stake --home $NSDPATH  --home-client $NSCLIPATH
+    nsd add-genesis-account $(nscli keys show bob -a --home $NSCLIPATH) 100token,100000000stake --home $NSDPATH  --home-client $NSCLIPATH
+    nsd add-genesis-account $(nscli keys show charlie -a --home $NSCLIPATH) 100token,100000000stake --home $NSDPATH  --home-client $NSCLIPATH
 
     # Configure your CLI to eliminate need for chain-id flag
     nscli config chain-id namechain --home $NSCLIPATH
@@ -66,17 +69,18 @@ EOF
     nscli config indent true --home $NSCLIPATH
     nscli config trust-node true --home $NSCLIPATH
 
-    nsd gentx --home $NSDPATH --name jack --home-client $NSCLIPATH <<EOF
+    # genesis transaction
+    nsd gentx --home $NSDPATH --name alice --home-client $NSCLIPATH <<EOF
 $PASS
 EOF
-    
+
+    # fetch the genesis transation
     nsd collect-gentxs --home $NSDPATH
+    # validate the genesis transaction
     nsd validate-genesis --home $NSDPATH 
 
-    nsd start --home $NSDPATH --moniker coucou > cosmosd.log 2>&1&
-
-    sleep 20
-
+    # everything ready, start the daemon
+    nsd start --home $NSDPATH --moniker mon > cosmosd.log 2>&1&
 }
 
 function gentransact() {
@@ -86,24 +90,80 @@ function gentransact() {
   |_| |___|___|_| |_|_|_|_  |
                         |___|"
 
-    set -x
-    nscli query account $(nscli keys show jack -a --home $NSCLIPATH) --home $NSCLIPATH
+    set +x
     nscli query account $(nscli keys show alice -a --home $NSCLIPATH) --home $NSCLIPATH
-
+    nscli query account $(nscli keys show bob -a --home $NSCLIPATH) --home $NSCLIPATH
+    nscli query account $(nscli keys show charlie -a --home $NSCLIPATH) --home $NSCLIPATH
     echo "SENDING 20 tokens in 20 times from jack to alice"
     counter=1
-    while [ $counter -le 20 ]
+    nbIter=100
+    
+    while [ $counter -le $nbIter ]
     do
-	((counter++))	
-	nscli tx --trace bank send $(nscli keys show jack -a --home $NSCLIPATH) $(nscli keys show alice -a --home $NSCLIPATH) ${counter}nametoken --home $NSCLIPATH <<EOF
+	
+	if [ $counter -gt 1 ]; then
+	    nscli query tx $a > /dev/null 2>&1
+	    at=$?
+	    while [ $at -eq 1 ]
+	    do
+		nscli query tx $a > /dev/null 2>&1
+		at=$?
+	    done
+	fi
+	
+	a=$(nscli tx --trace bank send $(nscli keys show alice -a --home $NSCLIPATH) $(nscli keys show bob -a --home $NSCLIPATH) 1token --home $NSCLIPATH <<EOF
 Y
 $PASS
 EOF
-	sleep 5
+	    )
+
+	a=$(echo $a | jq -r ".txhash")
+	
+	if [ $counter -gt 1 ]; then
+	    nscli query tx $b > /dev/null 2>&1
+	    bt=$?
+	    while [ $bt -eq 1 ]
+	    do
+		nscli query tx $b > /dev/null 2>&1
+		bt=$?
+	    done
+	fi
+	b=$(nscli tx --trace bank send $(nscli keys show bob -a --home $NSCLIPATH) $(nscli keys show charlie -a --home $NSCLIPATH) 1token --home $NSCLIPATH <<EOF
+Y
+$PASS
+EOF
+	 )
+	b=$(echo $b | jq -r ".txhash")
+	
+	
+	if [ $counter -gt 1 ]; then
+	    nscli query tx $c > /dev/null 2>&1
+	    ct=$?
+	    while [ $ct -eq 1 ]
+	    do
+		nscli query tx $c > /dev/null 2>&1
+		ct=$?
+	    done
+	fi
+	c=$(nscli tx --trace bank send $(nscli keys show charlie -a --home $NSCLIPATH) $(nscli keys show alice -a --home $NSCLIPATH) 1token --home $NSCLIPATH <<EOF
+Y
+$PASS
+EOF
+	 )
+	c=$(echo $c | jq -r ".txhash")
+	
+	
+	    
+	set +x
+
+	((counter++))	
+
+#		sleep 5
     done
     
-    nscli query account $(nscli keys show jack -a --home $NSCLIPATH) --home $NSCLIPATH
     nscli query account $(nscli keys show alice -a --home $NSCLIPATH) --home $NSCLIPATH
+    nscli query account $(nscli keys show bob -a --home $NSCLIPATH) --home $NSCLIPATH
+    nscli query account $(nscli keys show charlie -a --home $NSCLIPATH) --home $NSCLIPATH
     echo "DONE"
 }
 

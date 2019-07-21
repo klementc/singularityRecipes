@@ -15,14 +15,20 @@ From: ubuntu:18.04
 	# Install basic utilities
 	########
 	apt-get update
-	apt-get install -y build-essential git wget
+	apt-get install -y time build-essential git wget jq
 
 	wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
 	tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
 	rm go1.12.5.linux-amd64.tar.gz
-
+	chmod 777 /cosmos_start.sh
 %runscript
-	bash /cosmos_start.sh clone && bash /cosmos_start.sh init && bash /cosmos_start.sh test && sleep 30 && bash /cosmos_start.sh  kill
+	time /cosmos_start.sh clone
+	time /cosmos_start.sh init
+	sleep 20
+	time /cosmos_start.sh test
+	sleep 30
+	/cosmos_start.sh  kill
+	#go clean -modcache
 %files
 	./files/cosmos_start.sh /cosmos_start.sh
 %labels
