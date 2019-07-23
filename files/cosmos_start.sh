@@ -9,7 +9,7 @@ export NSDPATH=$PWD/.nsd
 export NSCLIPATH=$PWD/.nscli
 
 # password for accounts
-PASS="aaaaaaaa"
+export PASS="aaaaaaaa"
 
 function clone() {
     echo " _____ _             
@@ -102,11 +102,11 @@ function gentransact() {
     do
 	
 	if [ $counter -gt 1 ]; then
-	    nscli query tx $a > /dev/null 2>&1
+	    nscli query tx $a --trust-node > /dev/null 2>&1
 	    at=$?
 	    while [ $at -eq 1 ]
 	    do
-		nscli query tx $a > /dev/null 2>&1
+		nscli query tx $a --trust-node > /dev/null 2>&1
 		at=$?
 	    done
 	fi
@@ -120,11 +120,11 @@ EOF
 	a=$(echo $a | jq -r ".txhash")
 	
 	if [ $counter -gt 1 ]; then
-	    nscli query tx $b > /dev/null 2>&1
+	    nscli query tx $b --trust-node > /dev/null 2>&1
 	    bt=$?
 	    while [ $bt -eq 1 ]
 	    do
-		nscli query tx $b > /dev/null 2>&1
+		nscli query tx $b --trust-node > /dev/null 2>&1
 		bt=$?
 	    done
 	fi
@@ -137,11 +137,11 @@ EOF
 	
 	
 	if [ $counter -gt 1 ]; then
-	    nscli query tx $c > /dev/null 2>&1
+	    nscli query tx $c --trust-node > /dev/null 2>&1
 	    ct=$?
 	    while [ $ct -eq 1 ]
 	    do
-		nscli query tx $c > /dev/null 2>&1
+		nscli query tx $c --trust-node > /dev/null 2>&1
 		ct=$?
 	    done
 	fi
