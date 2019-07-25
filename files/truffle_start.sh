@@ -83,6 +83,7 @@ function testNodesCall() {
 
 }
 
+
 # main
 
 DIR_BASE=$PWD
@@ -97,6 +98,9 @@ elif [ "$MODE" == "migrate" ]; then
     migrate
 elif [ "$MODE" == "test" ]; then
     testNodesCall
+elif [ "$MODE" == "stop" ]; then
+    pkill geth
+    echo "files not deleted, see $HOME/contact-experiments and $HOME/{.ethash,.ethereum} to remove"
 else
     printHelp
 fi

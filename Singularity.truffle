@@ -25,7 +25,7 @@ From: ubuntu:18.04
 	# Install basic utilities
 	########
 	apt-get update
-	apt-get install -y build-essential git gcc g++ npm software-properties-common
+	apt-get install -y time build-essential git gcc g++ npm software-properties-common
 	add-apt-repository -y ppa:ethereum/ethereum
 	apt-get install -y ethereum	
 	########
@@ -39,11 +39,13 @@ From: ubuntu:18.04
 	npm install -g  truffle-contract
 	echo "[End] Truffle framework installed."
 
+	chmod 777 /truffle_start.sh
 %runscript
-	bash /truffle_start.sh clone
-	bash /truffle_start.sh init
-	bash /truffle_start.sh migrate
-	bash /truffle_start.sh test	
+	time /truffle_start.sh clone 2>&1 | tee clone.log
+	time /truffle_start.sh init 2>&1 | tee init.log 
+	time /truffle_start.sh migrate 2>&1 | tee migrate.log
+	time  /truffle_start.sh test 2>&1 | tee test.log
+	/truffle_start.sh stop
 %files
 	./files/truffle_start.sh /truffle_start.sh
 	./files/check.js	 /check.js

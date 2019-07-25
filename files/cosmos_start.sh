@@ -94,10 +94,13 @@ function gentransact() {
     nscli query account $(nscli keys show alice -a --home $NSCLIPATH) --home $NSCLIPATH
     nscli query account $(nscli keys show bob -a --home $NSCLIPATH) --home $NSCLIPATH
     nscli query account $(nscli keys show charlie -a --home $NSCLIPATH) --home $NSCLIPATH
-    echo "SENDING 20 tokens in 20 times from jack to alice"
-    counter=1
-    nbIter=100
     
+    counter=1
+    nbIter=200
+
+    keyalice=$(nscli keys show alice -a --home $NSCLIPATH)
+    keybob=$(nscli keys show bob -a --home $NSCLIPATH)
+    keycharlie=$(nscli keys show charlie -a --home $NSCLIPATH)
     while [ $counter -le $nbIter ]
     do
 	
@@ -111,14 +114,14 @@ function gentransact() {
 	    done
 	fi
 	
-	a=$(nscli tx --trace bank send $(nscli keys show alice -a --home $NSCLIPATH) $(nscli keys show bob -a --home $NSCLIPATH) 1token --home $NSCLIPATH <<EOF
+	a=$(nscli tx --trace bank send $keyalice $keybob 1token --home $NSCLIPATH <<EOF 
 Y
 $PASS
 EOF
 	    )
 
 	a=$(echo $a | jq -r ".txhash")
-	
+	echo $a
 	if [ $counter -gt 1 ]; then
 	    nscli query tx $b --trust-node > /dev/null 2>&1
 	    bt=$?
@@ -128,13 +131,13 @@ EOF
 		bt=$?
 	    done
 	fi
-	b=$(nscli tx --trace bank send $(nscli keys show bob -a --home $NSCLIPATH) $(nscli keys show charlie -a --home $NSCLIPATH) 1token --home $NSCLIPATH <<EOF
+	b=$(nscli tx --trace bank send $keybob $keycharlie 1token --home $NSCLIPATH <<EOF 
 Y
 $PASS
 EOF
 	 )
 	b=$(echo $b | jq -r ".txhash")
-	
+	echo $b
 	
 	if [ $counter -gt 1 ]; then
 	    nscli query tx $c --trust-node > /dev/null 2>&1
@@ -145,13 +148,13 @@ EOF
 		ct=$?
 	    done
 	fi
-	c=$(nscli tx --trace bank send $(nscli keys show charlie -a --home $NSCLIPATH) $(nscli keys show alice -a --home $NSCLIPATH) 1token --home $NSCLIPATH <<EOF
+	c=$(nscli tx --trace bank send $keycharlie $keyalice 1token --home $NSCLIPATH <<EOF
 Y
 $PASS
 EOF
 	 )
 	c=$(echo $c | jq -r ".txhash")
-	
+	echo $c
 	
 	    
 	set +x

@@ -22,11 +22,11 @@ From: ubuntu:18.04
 	rm go1.12.5.linux-amd64.tar.gz
 	chmod 777 /cosmos_start.sh
 %runscript
-	time /cosmos_start.sh clone
-	time /cosmos_start.sh init
-	sleep 20
-	time /cosmos_start.sh test
+	time /cosmos_start.sh clone 2>&1 | tee clone.log
+	time /cosmos_start.sh init 2>&1 | tee  init.log
 	sleep 30
+	time /cosmos_start.sh test 2>&1 | tee test.log
+	sleep 40
 	/cosmos_start.sh  kill
 	#go clean -modcache
 %files

@@ -10,34 +10,34 @@ module.exports = async function(callback) {
     web3.eth.getAccounts().then(
 	function(accs){
 	    accounts = accs
-	    console.log("accounts:"+accounts)
+	    console.log("[Info] Accounts addresses:"+accounts)
 	    return MyContract.deployed()
 		
 	}).then(function(inst) {
 	    instance = inst
 	    
 	    instance.getBalance(accounts[0]).then(function(b){
-		console.log("Funds account 1: "+b.toNumber())
+		console.log("[Info] Funds account Alice: "+b.toNumber())
 	    });
 
 	    instance.getBalance(accounts[1]).then(function(b1){
-		console.log("Funds account 2: "+b1.toNumber())
+		console.log("[Info] Funds account Bob: "+b1.toNumber())
 	    });
 
 	    instance.getBalance(accounts[2]).then(function(b2){
-		console.log("Funds account 3: "+b2.toNumber())
+		console.log("[Info] Funds account Charlie: "+b2.toNumber())
 	    });
 	    return instance.sendCoin(accounts[1], 1, {from: accounts[0]})
 	}).then(async function(val){
 	    //console.log(val.toNumber())
-	    for (let step = 0; step < 100; step++) {
-		// Runs 5 times, with values of step 0 through 4.
-		/*let t = await*/
+	    for (let step = 0; step < 200; step++) {
+		// send one token from alice to bob
 		instance.sendCoin(accounts[1], 1, {from: accounts[0]})
+		// send one token from bob to charlie
 		instance.sendCoin(accounts[2], 1, {from: accounts[1]})
+		// send one token from charlie to alice
 		instance.sendCoin(accounts[0], 1, {from: accounts[2]})
-		//let b = await instance.getBalance(accounts[0])
-		//console.log(b.toNumber())
+
 	    }
 	});
     

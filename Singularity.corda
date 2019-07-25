@@ -20,12 +20,14 @@ From: ubuntu:18.04
 
 	PATH=$PATH:$GOPATH/bin
 	export PATH
+	export DEBIAN_FRONTEND=noninteractive 
 %post
+	export DEBIAN_FRONTEND=noninteractive 
 	########
 	# Install basic utilities
 	########
 	apt-get update
-	apt-get install -y time build-essential curl git ssh sshpass software-properties-common
+	apt-get install -y time build-essential curl git ssh sshpass software-properties-common expect
 
 	#######
 	# Install java
@@ -34,14 +36,22 @@ From: ubuntu:18.04
 
 	chmod 777 /corda_start.sh
 
+	git clone https://github.com/clarkwang/passh.git
+	cd passh
+	cc -o passh passh.c
+	chmod 777 /passh/passh
+
 %runscript
-	time /corda_start.sh clone
-	time /corda_start.sh deploy
-	/corda_start.sh start
-	sleep 50
-	time /corda_start.sh test
-	killall java
+	time /corda_start.sh clone 2>&1 | tee clone.log
+	time /corda_start.sh deploy 2>&1 | tee deploy.log
+	/corda_start.sh start 2>&1 | tee start.log & 
+	sleep 60
+	time /corda_start.sh test 2>&1 | tee test.log
+	pkill -9 java
 %files
 	./files/corda_start.sh /corda_start.sh
+	./files/n1.expect      /n1.expect
+	./files/n2.expect      /n2.expect
+	./files/n3.expect      /n3.expect
 %labels
 	AUTHOR klement
