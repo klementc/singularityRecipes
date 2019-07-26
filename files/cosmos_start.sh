@@ -96,7 +96,7 @@ function gentransact() {
     nscli query account $(nscli keys show charlie -a --home $NSCLIPATH) --home $NSCLIPATH
     
     counter=1
-    nbIter=200
+    nbIter=300
 
     keyalice=$(nscli keys show alice -a --home $NSCLIPATH)
     keybob=$(nscli keys show bob -a --home $NSCLIPATH)

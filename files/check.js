@@ -30,7 +30,8 @@ module.exports = async function(callback) {
 	    return instance.sendCoin(accounts[1], 1, {from: accounts[0]})
 	}).then(async function(val){
 	    //console.log(val.toNumber())
-	    for (let step = 0; step < 200; step++) {
+	    for (let step = 0; step < 300; step++) {
+		console.log("step: "+step)
 		// send one token from alice to bob
 		instance.sendCoin(accounts[1], 1, {from: accounts[0]})
 		// send one token from bob to charlie

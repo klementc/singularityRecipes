@@ -132,8 +132,8 @@ function testNodesCall() {
     #sshpass -p "test" ssh  -p 2224 -o StrictHostKeyChecking=no user1@localhost start com.template.IssueTokenFlow amount: 100
     /passh/passh -p "test" ssh  -p 2224 -o StrictHostKeyChecking=no user1@localhost "start com.template.IssueTokenFlow amount: 100"
     echo "Accounts funded, trading tokens now"
-    nbIter=200
-    counter=10
+    nbIter=300
+    counter=1
     while [ $counter -le $nbIter ]
     do
 	echo "step: $counter"
