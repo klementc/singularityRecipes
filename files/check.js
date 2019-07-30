@@ -1,4 +1,3 @@
-
 var art = artifacts.require("MetaCoin");
 const contract = require('truffle-contract')
 const MyContract = contract(art);
@@ -32,16 +31,26 @@ module.exports = async function(callback) {
 	    //console.log(val.toNumber())
 	    for (let step = 0; step < 300; step++) {
 		console.log("step: "+step)
-		// send one token from alice to bob
-		instance.sendCoin(accounts[1], 1, {from: accounts[0]})
-		// send one token from bob to charlie
-		instance.sendCoin(accounts[2], 1, {from: accounts[1]})
+// send one token from bob to charlie
+		await instance.sendCoin.sendTransaction(accounts[2], 1, {from: accounts[1]})
+		// se nd one token from alice to bob
+		await instance.sendCoin.sendTransaction(accounts[1], 1, {from: accounts[0]})
+		
 		// send one token from charlie to alice
-		instance.sendCoin(accounts[0], 1, {from: accounts[2]})
+		await instance.sendCoin.sendTransaction(accounts[0], 1, {from: accounts[2]})
+		/*instance.getBalance(accounts[0]).then(function(b){
+		    console.log("[Info] Funds account Alice: "+b.toNumber())
+		});
 
+		instance.getBalance(accounts[1]).then(function(b1){
+		    console.log("[Info] Funds account Bob: "+b1.toNumber())
+		});
+
+		instance.getBalance(accounts[2]).then(function(b2){
+		    console.log("[Info] Funds account Charlie: "+b2.toNumber())
+		});*/
 	    }
 	});
-    
 
     //checkAllBalances();
 }

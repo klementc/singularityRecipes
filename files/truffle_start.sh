@@ -48,6 +48,8 @@ function init() {
     sleep 20
 
     echo "[Info] Unlock account"
+    geth --exec "web3.personal.unlockAccount('0x94c31EA438E8B167EEd7f20EcCAC69961c5D70CB', 'aaaa', 1500000)" attach http://127.0.0.1:8543
+    geth --exec "web3.personal.unlockAccount('0xaF1d2Af07bcac7fc6CCdE93CfA03C270ccB9FDb2', 'aaaa', 1500000)" attach http://127.0.0.1:8543
     geth --exec "web3.personal.unlockAccount('0xb595a97bc6039095fc3b6aa165e75a4ee79959e4', 'aaaa', 1500000)" attach http://127.0.0.1:8543
 
     echo "[Info] Balance:"

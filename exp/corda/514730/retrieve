@@ -1,1 +1,0 @@
-rsync -avzu --exclude '*.simg' --exclude 'contracts-experiment/' iris-cluster:/home/users/ccourageux/exp/corda/ .

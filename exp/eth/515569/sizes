@@ -1,5 +1,0 @@
-du -h .ethash 
-2.1G	.ethash
-
-du -h contracts-experiment/
-24M	contracts-experiment/
