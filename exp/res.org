@@ -1,0 +1,69 @@
+
+divise par elapsed
+
+* Retrieve data
+rsync -avzu --exclude '*.simg' --exclude '*.jar' iris-cluster:/home/users/ccourageux/exp/corda/ .
+sacct --jobs=513339,513311,513434 --format=JobID,Jobname,partition,time,start,end,MaxVMSize,nnodes,ncpus,nodelist,ConsumedEnergy
+
+* Corda
+** Full steps
+*** 514730
+** Test only
+*** 525589
+    srun -N 1 --exclusive -C broadwell -J cordatx1 -c 8 --qos qos-interactive -p interactive --pty bash -i
+    
+    time tests:
+    real	8m59.040s
+    user	0m3.917s
+    sys	0m7.478s
+*** 525595
+srun -N 1 --exclusive -C broadwell -J cordatx2 -c 8 --qos qos-interactive -p interactive --pty bash -i
+
+
+real	8m30.144s
+user	0m3.898s
+sys	0m7.386s
+*** 525605
+srun -N 1 --exclusive -C broadwell -J cordatx3 -c 8 --qos qos-interactive -p interactive --pty bash -i
+
+real	8m32.905s
+user	0m3.925s
+sys	0m7.414s
+
+* Eth
+
+** Al
+*** 525796
+srun -N 1 --exclusive -C broadwell -J ethall1 -c 8 --qos qos-interactive -p interactive --pty bash -i
+
+tests:
+36.07user 9.48system 36:09.10elapsed 2%CPU (0avgtext+0avgdata 573344maxresident)k
+5030inputs+0outputs (0major+748927minor)pagefaults 0swaps
+*** 540450
+srun -N 1 --exclusive -C broadwell -J ethall3 -c 8 --qos qos-interactive -p
+interactive --pty bash -i
+
+33.18user 9.57system 35:30.26elapsed 2%CPU (0avgtext+0avgdata 573776maxresident)k
+5042inputs+0outputs (0major+758693minor)pagefaults 0swaps
+*** 525848
+srun -N 1 --exclusive -C broadwell -J ethall2 -c 8 --qos qos-interactive -p interactive --pty bash -i
+33.15user 9.60system 35:08.83elapsed 2%CPU (0avgtext+0avgdata 574684maxresident)k
+5042inputs+0outputs (0major+757055minor)pagefaults 0swaps
+****** 525915
+   srun -N 1 --exclusive -C broadwell -J ethall3 -c 8 --qos qos-interactive -p interactive --pty bash -i
+
+   33.21user 9.57system 35:23.03elapsed 2%CPU (0avgtext+0avgdata 571284maxresident)k
+   5042inputs+0outputs (0major+760627minor)pagefaults 0swaps
+
+* Tender
+*** 526033
+srun -N 1 --exclusive -C broadwell -J tenall1 -c 8 --qos qos-interactive -p interactive --pty bash -i
+*** 538795
+srun -N 1 --exclusive -C broadwell -J tenall2 -c 8 --qos qos-interactive -p interactive --pty bash -i
+
+1391.22user 429.96system 25:01.82elapsed 121%CPU (0avgtext+0avgdata 48908maxresident)k
+600inputs+7200outputs (3major+58071730minor)pagefaults 0swaps
+*** 539691
+srun -N 1 --exclusive -C broadwell -J tenall3 -c 8 --qos qos-interactive -p interactive --pty bash -i
+1392.10user 430.09system 25:01.91elapsed 121%CPU (0avgtext+0avgdata 48908maxresident)k
+600inputs+7200outputs (3major+58132797minor)pagefaults 0swaps
